@@ -41,14 +41,7 @@ const submit = handleSubmit((values)=>{
         :title="auth.errorMsg"
        
     ></v-alert>
-    <v-alert
-        v-else
-        class="my-5"
-        color="success"
-        icon="$success"
-        title="Usuario correcto"
-       
-    ></v-alert>
+   
     <v-form class="mt-5">
         <v-text-field
             type="email"
