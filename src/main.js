@@ -14,6 +14,9 @@ import { firebaseApp } from './config/firebase.js'
 import App from './App.vue'
 import router from './router'
 
+import './assets/main.css'
+import '@mdi/font/css/materialdesignicons.css'
+
 const app = createApp(App)
 
 const vuetify = createVuetify({
