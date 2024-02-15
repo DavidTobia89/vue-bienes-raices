@@ -1,9 +1,19 @@
 <script setup>
 import { useForm, useField } from 'vee-validate'
-import { validationSchema, imageSchema } from '@/validation/propiedadSchema.js'
+import { collection, addDoc } from "firebase/firestore"; 
+import { useFirestore } from 'vuefire'
+import { useRouter} from 'vue-router'
+import { validationSchema, imageSchema } from '@/validation/propiedadSchema'
+import useImage from "@/composables/useImage";
+// Add a new document with a generated id.
+
 
 const items = [1, 2, 3, 4, 5]
 
+const { url, uploadImage, image } = useImage()
+const router = useRouter()
+
+ const db = useFirestore()
 const { handleSubmit } = useForm({
     validationSchema:{
         ...validationSchema,
@@ -18,10 +28,22 @@ const habitaciones = useField('habitaciones')
 const wc= useField('wc')
 const estacionamiento = useField('estacionamiento')
 const descripcion = useField('descripcion')
+const alberca = useField('alberca', null, {
+    initialValue: false
+})
 
+const submit = handleSubmit(async (values)=>{
+    
+    const {imagen, ...propiedad} = values
+    
+    const docRef = await addDoc(collection(db, "propiedades"), {
+        ...propiedad,
+        imagen: url.value
+        });
+    if(docRef.id){
+        router.push({name: 'admin-propiedades'})
+    }
 
-const submit = handleSubmit((values)=>{
-  console.log(values)
 })
 </script>
 
@@ -62,7 +84,13 @@ const submit = handleSubmit((values)=>{
             bg-color="blue-grey-lighten-5"
             v-model="imagen.value.value"
             :error-messages="imagen.errorMessage.value"
-        />
+            @change="uploadImage"
+        /> 
+        <div v-if="image" class="my-5">
+            <p class="font-weight-bold">Imagen Propiedad:</p>
+            <img class="w-50" :src="image">
+           
+        </div>
         <v-text-field
             type="text"
             label="Precio"
@@ -114,10 +142,12 @@ const submit = handleSubmit((values)=>{
        <v-textarea 
             class="mb-5" 
             label="Descripción"
-            v-model="titulo.value.value"
-            :error-messages="titulo.errorMessage.value"></v-textarea>
+            v-model="descripcion.value.value"
+            :error-messages="descripcion.errorMessage.value"></v-textarea>
 
-       <v-checkbox label="Alberca"></v-checkbox>
+       <v-checkbox label="Alberca"
+       v-model="alberca.value.value"
+       :error-messages="alberca.errorMessage.value"></v-checkbox>
         <v-btn
             block
             color="pink-accent-3"
