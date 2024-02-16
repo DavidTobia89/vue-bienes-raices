@@ -1,8 +1,8 @@
 <script setup>
-import usePropiedades from '../../composables/usePropiedades'
+import usePropiedades from '@/composables/usePropiedades'
+import {propertyPrice} from '@/helpers'
 
-
-const {propiedadesCollection, prieceProperty} = usePropiedades()
+const {propiedadesCollection} = usePropiedades()
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const {propiedadesCollection, prieceProperty} = usePropiedades()
                     </v-list-item-media>
                 </template>
                 <v-list-item-title> {{ propiedad.titulo }}</v-list-item-title>
-                <v-list-item-subtitle> {{ prieceProperty(propiedad.precio) }}</v-list-item-subtitle>
+                <v-list-item-subtitle> {{ propertyPrice(propiedad.precio) }}</v-list-item-subtitle>
                 <template v-slot:append>
                     <v-btn
                         color="info"
